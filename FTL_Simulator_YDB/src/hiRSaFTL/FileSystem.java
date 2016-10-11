@@ -12,7 +12,7 @@ public class FileSystem {
 		int skipCount = 0;
 		long temp = -1;
 		long page_number = 0; // physical page number from the workload
-		long page_offset = 0; // physical page offset from the workload
+		//long page_offset = 0; // physical page offset from the workload
 		long page_num_fold = 0;
 		long page_size = 0; // physical page size from the workload
 
@@ -28,7 +28,7 @@ public class FileSystem {
 
 				temp = Long.valueOf(elements[4]).longValue(); // String to long
 				page_number = temp / Config.PAGE_BYPT_SIZE;
-				page_offset = temp % Config.PAGE_BYPT_SIZE;
+			//	page_offset = temp % Config.PAGE_BYPT_SIZE;
 				// folding the total data
 				page_num_fold = page_number % Config.TOTAL_LOGICAL_PAGE_NUM;
 
