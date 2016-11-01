@@ -257,16 +257,25 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 	private boolean checkSequentialAddr(int currentLPN) {
 
 		boolean output = false;
-		int frontCurrLPN = (0 == currentLPN) ? (Config.TOTAL_LOGICAL_PAGE_NUM - 1)
+		int frontCurrLPN = (0 > (currentLPN - 1)) ? Config.TOTAL_LOGICAL_PAGE_NUM - 1
 				: (currentLPN - 1);
 		int rearCurrLPN = (currentLPN + 1) % Config.TOTAL_LOGICAL_PAGE_NUM;
 
-		// no problem in aging version
-		if ((ram.getRAM().get(frontCurrLPN) == (ram.getRAM().get(currentLPN) - 1))
-				|| (ram.getRAM().get(rearCurrLPN) == (ram.getRAM().get(
-						currentLPN) + 1))) {
-
+		// i fixed it when inital value = -1
+		if ((-1 == ram.getRAM().get(currentLPN) - 1)
+				&& (ram.getRAM().get(rearCurrLPN) != ram.getRAM().get(
+						currentLPN) + 1)) {
+			output = false;
+		} else if ((ram.getRAM().get(frontCurrLPN) == ram.getRAM().get(
+				currentLPN) - 1)
+				|| (ram.getRAM().get(rearCurrLPN) == ram.getRAM().get(
+						currentLPN) + 1)) {
 			output = true;
+		}
+
+		// log buffer
+		if (ram.getRAM().get(currentLPN) >= Config.TOTAL_LOGICAL_PAGE_NUM) {
+			output = false;
 		}
 
 		return output;

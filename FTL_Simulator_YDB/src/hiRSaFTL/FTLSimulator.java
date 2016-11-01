@@ -14,12 +14,12 @@ public class FTLSimulator {
 	public static void main(String[] args) throws Exception {
 
 		printTodayDate();
-///*
+/*
 		// FileSystem_Output
 		FileSystem filesystem = new FileSystem();
 		filesystem.csv_To_txt();
 		System.out.println("=> .txt is extracted from .csv !!");
-//*/
+*/
 		long time1 = System.currentTimeMillis();// start time
 
 		if (Config.FTL == 1) {

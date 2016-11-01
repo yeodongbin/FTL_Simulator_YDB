@@ -191,7 +191,13 @@ public class RSaFTL extends GarbageCollectorFTL {
 				: (currentLPN - 1);
 		int rearCurrLPN = (currentLPN + 1) % Config.TOTAL_LOGICAL_PAGE_NUM;
 
-		if ((ram.getRAM().get(frontCurrLPN) == ram.getRAM().get(currentLPN) - 1)
+		// i fixed it when inital value = -1
+		if ((-1 == ram.getRAM().get(currentLPN) - 1)
+				&& (ram.getRAM().get(rearCurrLPN) != ram.getRAM().get(
+						currentLPN) + 1)) {
+			output = false;
+		} else if ((ram.getRAM().get(frontCurrLPN) == ram.getRAM().get(
+				currentLPN) - 1)
 				|| (ram.getRAM().get(rearCurrLPN) == ram.getRAM().get(
 						currentLPN) + 1)) {
 			output = true;
