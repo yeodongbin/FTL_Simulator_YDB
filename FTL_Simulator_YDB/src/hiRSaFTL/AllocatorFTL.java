@@ -12,8 +12,6 @@ public class AllocatorFTL {
 
 		Ram ram1 = new Ram();
 
-		
-		
 		while (searchCount < Config.ALL_PAGE_NUM) {
 			searchCount++;
 
@@ -57,6 +55,7 @@ public class AllocatorFTL {
 				currentBufPoint = Config.ALL_PAGE_NUM;
 			}
 		} else {
+			System.out.println("YDB");
 			System.out.println("currentBufPoint Error!! - allocatorLogBuf");
 			System.exit(0);
 		}

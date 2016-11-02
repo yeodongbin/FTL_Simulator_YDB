@@ -118,6 +118,7 @@ public class GarbageCollectorFTL {
 	public void gCLLogBuf(int eraseBlock) {//Garbage Collector LogLog Buffer 
 
 		int currentLPN = 0;
+		int currentPBN = 0;
 		int startPPN = 0;
 		int endPPN = 0;
 		int ppn = 0;
@@ -131,8 +132,12 @@ public class GarbageCollectorFTL {
 				flagPartial++;
 				currentLPN = extractedLPNFromMapTableByPPN(i);
 
-				do {// select free_ppn
-					ppn = allocator.allocFTL(Ram.ppnTable);
+				do {// select free_ppn in Logbuf - YDB
+					ppn = allocator.allocLogBuf(Ram.ppnTable);
+					//YDB
+					currentPBN = mappingLPNToPPN(currentLPN, ppn);
+					switchGCLogBuf(ppn, currentPBN);
+					
 				} while (eraseBlock == (ppn / Config.PAGE_NUM));
 
 				linkedLPNToPPN(currentLPN, ppn);
@@ -147,7 +152,38 @@ public class GarbageCollectorFTL {
 		Data.eraseCountLog++;
 		return;
 	}
-
+	
+	//YDB
+	private void switchGCLogBuf(int ppn, int block) {
+		// switch GC Log-Buffer //YEO
+		if ((Config.ALL_LOG_PAGE_NUM - 1) == ppn) {
+			gCLogBuf(Config.ALL_BLOCK_NUM);
+		} else if (((Config.LOG_PAGE_NUM - 1) == (ppn % Config.LOG_PAGE_NUM))
+				&& (-1 != Ram.ppnTable[ppn + 1])) {
+			// GC=>NextBlock
+			gCLogBuf(block + 1);
+		}
+	}
+	
+	//YDB
+	private int mappingLPNToPPN(int currentLPN, int ppn) {
+		int pbn;
+		pbn = ppn / Config.PAGE_NUM;
+		ram.getRAM().put(currentLPN, ppn);
+		Ram.ppnTable[ppn] = 0; // 0 valid
+		writeNumValidonBlockTable(pbn);
+		return pbn;
+	}
+	
+	//YDB
+	private void writeNumValidonBlockTable(int block) {
+		int validNum;
+		// Write Block of the Number of Valid page
+		validNum = Ram.blockInfoValid[block] + 1;
+		Ram.blockInfoValid[block] = validNum;
+	}
+	
+	
 	private void migratedValidPageFromVictimBlkToFreeBlk(int victimBlock) {
 		int currPPN;
 		int currentLPN;

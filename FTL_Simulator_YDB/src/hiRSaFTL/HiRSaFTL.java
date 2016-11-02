@@ -21,7 +21,7 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 		int temp = -3;
 		long counter = 0;
 		String readWrite = null;
-		
+
 		try (BufferedReader br = new BufferedReader(new FileReader(
 				Config.FILE_SYSTEM_OUTPUT))) {
 			InitTables(); // initializing Tables in RAM class
@@ -139,13 +139,11 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 										System.exit(999);// Error code
 										break;
 									}
-
 								}
 							} else {
 								System.out.println(" allocatior Error ");
 								break;
 							}
-
 							switchGC(currentPBN);// GC switch
 						}
 					} else {
@@ -155,7 +153,7 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 					Data.count_total_read++;
 				}
 			}
-			
+
 			hashMapToTxt();// record Hash Map to .txt file
 
 		} catch (IOException e) {
@@ -182,7 +180,7 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 		}
 	}
 
-	// check point!!**
+	// check point!!-YDB**
 	private void switchGCLLogBuf(int ppn, int block) {
 		// switch GC LogLog-Buffer //YEO
 		if ((Config.TOTAL_PAGE_NUM - 1) == ppn) {
