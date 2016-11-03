@@ -63,15 +63,14 @@ public class GarbageCollectorFTL {
 			if (0 == validCount) { // Full Merge
 				eraseBlock(victimBlock);
 				Data.fullmerge++;
-				System.out.println(" > Erase Block (Full Merge) = "
-						+ victimBlock);
+				//System.out.println("> Erase Block (Full Merge)= " + victimBlock);
 			} else if (0 != validCount) { // Partial Merge
 				migratedValidPageFromVictimBlkToFreeBlk(victimBlock);
 				eraseBlock(victimBlock);
 
 				Data.partialmerge++;
-				System.out.println(" > Erase Block (Partial Merge) = "
-						+ victimBlock + " ,Moving page = " + validCount);
+				/*System.out.println("> Erase Block (Partial Merge)="
+						+ victimBlock + " ,Moving page= " + validCount);*/
 			}
 		}
 
@@ -246,12 +245,10 @@ public class GarbageCollectorFTL {
 	private void printMergeType(int eraseBlock, int flagPartial) {
 		if (flagPartial > 0) {
 			Data.partialmerge++;
-			System.out.println(" ->> Erase Log Block (Partial Merge) = "
-					+ eraseBlock);
+			//System.out.println(">> Erase Log Block (Partial Merge)="+ eraseBlock);
 		} else {
 			Data.fullmerge++;
-			System.out.println(" ->> Erase Log Block (Full Merge) = "
-					+ eraseBlock);
+			//System.out.println(">> Erase Log Block (Full Merge)="+ eraseBlock);
 		}
 	}
 

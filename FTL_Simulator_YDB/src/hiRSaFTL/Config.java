@@ -9,7 +9,7 @@ package hiRSaFTL;
 public class Config {
 
 	public static boolean AGING = true;// false true
-	public static int FTL = 1; // 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL
+	public static int FTL = 2; // 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL
 
 	static final int PAGE_BYPT_SIZE = 4096; // 4KB = 4096byte
 
