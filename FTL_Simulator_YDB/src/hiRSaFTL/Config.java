@@ -8,13 +8,13 @@ package hiRSaFTL;
 
 public class Config {
 
-	public static boolean AGING = false;// false true
-	public static int FTL = 3; // 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL
+	public static boolean AGING = true;// false true
+	public static int FTL = 1; // 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL
 
 	static final int PAGE_BYPT_SIZE = 4096; // 4KB = 4096byte
 
 	
-//*
+/*
 	// Logical Area
 	static final int LOGICAL_BLOCK_NUM = 64; // plane size = 4096
 	static final int LOGICAL_PAGE_NUM = 4;   // The number of pages in a block
@@ -43,8 +43,8 @@ public class Config {
 									: 0));
 	static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 	static final int TOTAL_LLOG_PAGE_NUM = LLOG_BLOCK_NUM * LLOG_PAGE_NUM;
-	
-	/*
+*/
+
 	// Logical Area
 		static final int LOGICAL_BLOCK_NUM = 4096; // plane size = 4096
 		static final int LOGICAL_PAGE_NUM = 256;// The number of pages in a block
@@ -73,8 +73,7 @@ public class Config {
 										: 0));
 		static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 		static final int TOTAL_LLOG_PAGE_NUM = LLOG_BLOCK_NUM * LLOG_PAGE_NUM;
-	*/
-	
+	//*/
 	// ALL 경우에 따라 변경됨.
 	static final int ALL_BLOCK_NUM = LOGICAL_BLOCK_NUM + OP_BLOCK_NUM;
 	static final int ALL_PAGE_NUM = (ALL_BLOCK_NUM * LOGICAL_PAGE_NUM);
@@ -93,33 +92,27 @@ public class Config {
 
 	// GC Switch// more than OP area 
 	//(ex) 4 op block*page num =16 page)
-	static final int SWITCH_GC_NUM = OP_BLOCK_NUM * LOGICAL_PAGE_NUM;
+	//static final int SWITCH_GC_NUM = OP_BLOCK_NUM * LOGICAL_PAGE_NUM;
+	static final int SWITCH_GC_NUM = 2 * LOGICAL_PAGE_NUM;
 	
-	///* File System
 	
-	/*
 	static final String FILE_SYSTEM_INPUT = "D:/수업 자료/0. 연구 자료/Traces_MSR/"
-			+ "msr-cambridge1/MSR-Cambridge/hm_1.csv/CAMRESHMSA01-lvm1.csv";
-
-	static final String FILE_SYSTEM_OUTPUT = "./FileOut_hm_1_ver." + FTL
-			+ ".txt";*/
-	static final String FILE_SYSTEM_OUTPUT = "test"+".txt";
-	
+			+ "msr-cambridge1/MSR-Cambridge/hm_0.csv/CAMRESHMSA01-lvm0.csv";
+	static final String FILE_SYSTEM_OUTPUT = "./FileOut_hm_0.txt";
+	//static final String FILE_SYSTEM_OUTPUT = "test"+".txt";
 
 	// Aging File
-	static final String AGING_BLOCK_TABLE_INPUT = "./Physical_Block_Output"
-			+ FTL + ".txt";
-	static final String AGING_PAGE_TABLE_INPUT = "./Physical_Page_Output"
-			+ FTL + ".txt";
-	static final String AGING_RAM_INPUT = "./LPN_PPN_Mapping_Table_Output"
-			+ FTL + ".txt";
+	static final String AGING_BLOCK_TABLE_INPUT = "./aging_Physical_Block.txt";
+	static final String AGING_PAGE_TABLE_INPUT = "./aging_Physical_Page.txt";
+	static final String AGING_RAM_INPUT = "./aging_LPN_PPN_Mapping_Table.txt";
 	
 	// Test용	
-	static final String BLOCK_TABLE_OUTPUT = "./Physical_Block_Output" + FTL
+	static final String BLOCK_TABLE_OUTPUT = "./Physical_Block" + FTL
 				+ ".txt";
-	static final String PAGE_TABLE_OUTPUT = "./Physical_Page_Output" + FTL
+	static final String PAGE_TABLE_OUTPUT = "./Physical_Page" + FTL
 				+ ".txt";
-	static final String RAM_OUTPUT = "./LPN_PPN_Mapping_Table_Output" + FTL
+	static final String RAM_OUTPUT = "./LPN_PPN_Mapping_Table" + FTL
 				+ ".txt";
+	
 	static final String LOG_TABLE_OUTPUT = "./Log_Table_Output.txt";
 }

@@ -14,12 +14,12 @@ public class FTLSimulator {
 	public static void main(String[] args) throws Exception {
 
 		printTodayDate();
-/*
-		// FileSystem_Output
+
+		/* FileSystem_Output
 		FileSystem filesystem = new FileSystem();
 		filesystem.csv_To_txt();
 		System.out.println("=> .txt is extracted from .csv !!");
-*/
+		 */
 		long time1 = System.currentTimeMillis();// start time
 
 		if (Config.FTL == 1) {
@@ -28,11 +28,13 @@ public class FTLSimulator {
 			pageFTL.pageFTL();
 			System.out.println("=> Page FTL Simulator end! ");
 			executionResult();// in console
+			
 		} else if (Config.FTL == 2) {
 			System.out.println("=>RSaFTL Simulator Start! ");
 			RSaFTL rSaFTL = new RSaFTL();
 			rSaFTL.rSaFTL();
 			executionResult();// in console
+			
 		} else if (Config.FTL == 3) {
 			System.out.println("=> HiRSaFTL Simulator Start! ");
 			HiRSaFTL hiRSaFTL = new HiRSaFTL();
