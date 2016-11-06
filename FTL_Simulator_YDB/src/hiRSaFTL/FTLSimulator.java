@@ -15,31 +15,37 @@ public class FTLSimulator {
 
 		printTodayDate();
 
-		// FileSystem_Output 
+		// FileSystem_Output
 		FileSystem filesystem = new FileSystem();
 		filesystem.csv_To_txt();
 		System.out.println("=> .txt is extracted from .csv !!");
-		
+
 		long time1 = System.currentTimeMillis();// start time
 
 		if (Config.FTL == 1) {
-			System.out.println("=> Page FTL Simulator Start! ");
+			System.out.println("=>Page FTL Simulator Start! ");
 			PageFTL pageFTL = new PageFTL();
 			pageFTL.pageFTL();
-			System.out.println("=> Page FTL Simulator end! ");
 			executionResult();// in console
-			
+
 		} else if (Config.FTL == 2) {
 			System.out.println("=>RSaFTL Simulator Start! ");
 			RSaFTL rSaFTL = new RSaFTL();
 			rSaFTL.rSaFTL();
 			executionResult();// in console
-			
+
 		} else if (Config.FTL == 3) {
-			System.out.println("=> HiRSaFTL Simulator Start! ");
+			System.out.println("=>HiRSaFTL Simulator Start! ");
 			HiRSaFTL hiRSaFTL = new HiRSaFTL();
 			hiRSaFTL.hiRSaFTL();
 			executionResult();// in console
+
+		} else if (Config.FTL == 4) {
+			System.out.println("=>RSaFTL_DelayAlgorithm Simulator Start! ");
+			RSaFTL_DelayAlgorithm rSaFTL_delay = new RSaFTL_DelayAlgorithm();
+			rSaFTL_delay.rSaFTL_delay();
+			executionResult();// in console
+
 		} else {
 			System.out.println("---!!Config.FTL Error!!---");
 		}
@@ -47,7 +53,7 @@ public class FTLSimulator {
 		long time2 = System.currentTimeMillis();// end time
 
 		System.out.println("###### Run-Time(sec) : " + (time2 - time1)
-				/ 10000.0f + "sec");
+				/ 100000.0f + "min");
 	}
 
 	private static void printTodayDate() {// Data
@@ -62,6 +68,8 @@ public class FTLSimulator {
 			System.out.println("=> Page FTL Simulator");
 		} else if (Config.FTL == 2) {
 			System.out.println("=> RSaFTL Simulator");
+		} else if (Config.FTL == 4) {
+			System.out.println("=> RSaFTL Delay Algoritum Simulator");
 		} else {
 			System.out.println("=> HiRSaFTL Simulator");
 		}

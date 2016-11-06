@@ -8,8 +8,9 @@ package hiRSaFTL;
 
 public class Config {
 
-	public static boolean AGING = true;// false true
-	public static int FTL = 1; // 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL
+	public static boolean AGING = false;// false true
+	public static int FTL = 4; 
+	// 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL, 4:RSaFTL_DelayAlgorithm
 
 	static final int PAGE_BYPT_SIZE = 4096; // 4KB = 4096byte
 
@@ -22,7 +23,7 @@ public class Config {
 
 	// Overflow provision
 	static final int OP_BLOCK_NUM = (FTL == 1) ? 32
-									: ((FTL == 2) ? 16
+									: (((FTL == 2)||(FTL == 4)) ? 16
 									: ((FTL == 3) ? 16
 									: 0));
 	static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -30,7 +31,7 @@ public class Config {
 
 	// *Log Buffer Area // page
 	static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
-									: ((FTL == 2) ? 16
+									: (((FTL == 2)||(FTL == 4)) ? 16
 									: ((FTL == 3) ? 12
 									: 0));
 	static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -38,7 +39,7 @@ public class Config {
 
 	// **LogLog Buffer Area
 	static final int LLOG_BLOCK_NUM = (FTL == 1) ? 0
-									: ((FTL == 2) ? 0
+									: (((FTL == 2)||(FTL == 4)) ? 0
 									: ((FTL == 3) ? 4
 									: 0));
 	static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -52,7 +53,7 @@ public class Config {
 
 		// Overflow provision
 		static final int OP_BLOCK_NUM = (FTL == 1) ? 512
-										: ((FTL == 2) ? 384
+										: (((FTL == 2)||(FTL == 4)) ? 384
 										: ((FTL == 3) ? 256
 										: 0));
 		static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -60,7 +61,7 @@ public class Config {
 
 		// *Log Buffer Area // page
 		static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
-										: ((FTL == 2) ? 128
+										: (((FTL == 2)||(FTL == 4)) ? 128
 										: ((FTL == 3) ? 25
 										: 0));
 		static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -68,7 +69,7 @@ public class Config {
 
 		// **LogLog Buffer Area
 		static final int LLOG_BLOCK_NUM = (FTL == 1) ? 0
-										: ((FTL == 2) ? 0
+										: (((FTL == 2)||(FTL == 4)) ? 0
 										: ((FTL == 3) ? 231
 										: 0));
 		static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
