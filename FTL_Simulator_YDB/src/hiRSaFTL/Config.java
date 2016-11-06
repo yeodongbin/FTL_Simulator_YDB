@@ -8,7 +8,7 @@ package hiRSaFTL;
 
 public class Config {
 
-	public static boolean AGING = true;// false true
+	public static boolean AGING = false;// false true
 	public static int FTL = 1; 
 	// 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL, 4:RSaFTL_DelayAlgorithm
 
@@ -53,7 +53,7 @@ public class Config {
 
 		// Overflow provision
 		static final int OP_BLOCK_NUM = (FTL == 1) ? 512
-										: (((FTL == 2)||(FTL == 4)) ? 384
+										: (((FTL == 2)||(FTL == 4)) ? 256
 										: (((FTL == 3)||(FTL == 5)) ? 256
 										: 0));
 		static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -61,7 +61,7 @@ public class Config {
 
 		// *Log Buffer Area // page
 		static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
-										: (((FTL == 2)||(FTL == 4)) ? 128
+										: (((FTL == 2)||(FTL == 4)) ? 256
 										: (((FTL == 3)||(FTL == 5)) ? 25
 										: 0));
 		static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -74,6 +74,7 @@ public class Config {
 										: 0));
 		static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 		static final int TOTAL_LLOG_PAGE_NUM = LLOG_BLOCK_NUM * LLOG_PAGE_NUM;
+		
 	//*/
 	// ALL 경우에 따라 변경됨.
 	static final int ALL_BLOCK_NUM = LOGICAL_BLOCK_NUM + OP_BLOCK_NUM;
@@ -97,8 +98,8 @@ public class Config {
 	static final int SWITCH_GC_NUM = 2 * LOGICAL_PAGE_NUM;
 
 	static final String FILE_SYSTEM_INPUT = "D:/수업 자료/0. 연구 자료/Traces_MSR/"
-			+ "msr-cambridge2/MSR-Cambridge/web_0.csv/CAMRESWEBA03-lvm0.csv";
-	static final String FILE_SYSTEM_OUTPUT = "./FileOut_web_0.txt";
+			+ "msr-cambridge1/MSR-Cambridge/mds_0.csv/CAMRESWMSA03-lvm0.csv";
+	static final String FILE_SYSTEM_OUTPUT = "./FileOut_mds_0.txt";
 	// static final String FILE_SYSTEM_OUTPUT = "test"+".txt";
 
 	// Aging File

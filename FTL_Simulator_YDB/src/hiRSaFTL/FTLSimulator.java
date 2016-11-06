@@ -12,7 +12,9 @@ import java.util.Date;
 public class FTLSimulator {
 
 	public static void main(String[] args) throws Exception {
-
+		
+		long time1 = System.currentTimeMillis();// start time
+		
 		printTodayDate();
 
 		// FileSystem_Output
@@ -20,38 +22,41 @@ public class FTLSimulator {
 		filesystem.csv_To_txt();
 		System.out.println("=> .txt is extracted from .csv !!");
 
-		long time1 = System.currentTimeMillis();// start time
-
-		if (Config.FTL == 1) {
+		switch (Config.FTL) {
+		case 1:
 			System.out.println("=>Page FTL Simulator Start! ");
 			PageFTL pageFTL = new PageFTL();
 			pageFTL.pageFTL();
 			executionResult();// in console
-
-		} else if (Config.FTL == 2) {
+			System.out.println("=>Page FTL Simulator End! ");
+			break;
+		case 2:
 			System.out.println("=>RSaFTL Simulator Start! ");
 			RSaFTL rSaFTL = new RSaFTL();
 			rSaFTL.rSaFTL();
 			executionResult();// in console
-
-		} else if (Config.FTL == 3) {
+			System.out.println("=>RSaFTL Simulator End! ");
+			break;
+		case 3:
 			System.out.println("=>HiRSaFTL Simulator Start! ");
 			HiRSaFTL hiRSaFTL = new HiRSaFTL();
 			hiRSaFTL.hiRSaFTL();
 			executionResult();// in console
-
-		} else if (Config.FTL == 4) {
+			System.out.println("=>HiRSaFTL Simulator End! ");
+			break;
+		case 4:
 			System.out.println("=>RSaFTL_DelayAlgorithm Simulator Start! ");
 			RSaFTL_DelayAlgorithm rSaFTL_delay = new RSaFTL_DelayAlgorithm();
 			rSaFTL_delay.rSaFTL_delay();
 			executionResult();// in console
-
-		} else {
+			System.out.println("=>RSaFTL_DelayAlgorithm Simulator End! ");
+			break;
+		default:
 			System.out.println("---!!Config.FTL Error!!---");
+			break;
 		}
 
 		long time2 = System.currentTimeMillis();// end time
-
 		System.out.println("## Run-Time(sec) : " + (time2 - time1) / 100000.0f);
 	}
 
@@ -63,16 +68,6 @@ public class FTLSimulator {
 	}
 
 	private static void executionResult() {// Print out Result in console
-
-		if (Config.FTL == 1) {
-			System.out.println("=> Page FTL Simulator");
-		} else if (Config.FTL == 2) {
-			System.out.println("=> RSaFTL Simulator");
-		} else if (Config.FTL == 4) {
-			System.out.println("=> RSaFTL Delay Algoritum Simulator");
-		} else {
-			System.out.println("=> HiRSaFTL Simulator");
-		}
 
 		System.out.println("\n*** SIMULATOR CONFIGURATION ***");
 		System.out.println(" PAGE NUM          = " + Config.LOGICAL_PAGE_NUM);
@@ -88,7 +83,6 @@ public class FTLSimulator {
 		System.out.println("Sequential Write Request= "
 				+ (Data.write_req - Data.write_req_1page));
 		System.out.println("Random Write Request    = " + Data.write_req_1page);
-		System.out.println("\n");
 
 		System.out.println("Written pages Count (exteral/interal) = "
 				+ Data.total_write_pages);
@@ -98,7 +92,6 @@ public class FTLSimulator {
 				+ (Data.total_write_pages - Data.ex_write_pages));
 		// valid-page Move 와 동일해야한다.
 
-		System.out.println("\n");
 		System.out.println("Erase Count              = " + Data.eraseCount);
 		System.out.println("Fullmerge Count          = " + Data.fullmerge);
 		System.out.println("Partialmerge Count       = " + Data.partialmerge);
