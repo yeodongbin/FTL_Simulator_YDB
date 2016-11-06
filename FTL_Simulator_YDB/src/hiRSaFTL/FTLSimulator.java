@@ -52,8 +52,7 @@ public class FTLSimulator {
 
 		long time2 = System.currentTimeMillis();// end time
 
-		System.out.println("###### Run-Time(sec) : " + (time2 - time1)
-				/ 100000.0f + "min");
+		System.out.println("## Run-Time(sec) : " + (time2 - time1) / 100000.0f);
 	}
 
 	private static void printTodayDate() {// Data
@@ -64,6 +63,7 @@ public class FTLSimulator {
 	}
 
 	private static void executionResult() {// Print out Result in console
+
 		if (Config.FTL == 1) {
 			System.out.println("=> Page FTL Simulator");
 		} else if (Config.FTL == 2) {
@@ -84,21 +84,26 @@ public class FTLSimulator {
 		System.out.println(" TOTAL PAGE NUM    = " + Config.TOTAL_PAGE_NUM);
 
 		System.out.println("\n*** EXECUTION RESULT DATA ***");
-		System.out.println(" Total Writing Count       = "
-				+ Data.count_total_ex_write);
-		System.out.println(" Total written pages Count = "
-				+ Data.count_total_ex_write_pages);
-		System.out.println(" Random writing Count      = "
-				+ Data.count_write_ex_1page);
-		System.out.println(" Sequential writing Count  = "
-				+ (Data.count_total_ex_write - Data.count_write_ex_1page));
-		System.out.println(" All write Number (inside/outside) = "
-				+ (Data.all_total_write_pages));
+		System.out.println("Write Request           = " + Data.write_req);
+		System.out.println("Sequential Write Request= "
+				+ (Data.write_req - Data.write_req_1page));
+		System.out.println("Random Write Request    = " + Data.write_req_1page);
+		System.out.println("\n");
 
-		System.out.println("\n Erase Count              = " + Data.eraseCount);
-		System.out.println(" fullmerge Count          = " + Data.fullmerge);
-		System.out.println(" partialmerge Count       = " + Data.partialmerge);
-		System.out
-				.println(" Valid-page Move          = " + Data.validMoveCount);
+		System.out.println("Written pages Count (exteral/interal) = "
+				+ Data.total_write_pages);
+		System.out.println("Written pages Count (external) = "
+				+ Data.ex_write_pages);
+		System.out.println("Written pages Count (interal)  = "
+				+ (Data.total_write_pages - Data.ex_write_pages));
+		// valid-page Move 와 동일해야한다.
+
+		System.out.println("\n");
+		System.out.println("Erase Count              = " + Data.eraseCount);
+		System.out.println("Fullmerge Count          = " + Data.fullmerge);
+		System.out.println("Partialmerge Count       = " + Data.partialmerge);
+		System.out.println("Valid-page Move          = " + Data.validMoveCount);
+		System.out.println("Valid-page Move Log      = "
+				+ Data.validMoveCountLog);
 	}
 }

@@ -8,8 +8,8 @@ package hiRSaFTL;
 
 public class Config {
 
-	public static boolean AGING = false;// false true
-	public static int FTL = 4; 
+	public static boolean AGING = true;// false true
+	public static int FTL = 1; 
 	// 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL, 4:RSaFTL_DelayAlgorithm
 
 	static final int PAGE_BYPT_SIZE = 4096; // 4KB = 4096byte
@@ -24,7 +24,7 @@ public class Config {
 	// Overflow provision
 	static final int OP_BLOCK_NUM = (FTL == 1) ? 32
 									: (((FTL == 2)||(FTL == 4)) ? 16
-									: ((FTL == 3) ? 16
+									: (((FTL == 3)||(FTL == 5)) ? 16
 									: 0));
 	static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
 	static final int TOTAL_OP_PAGE_NUM = OP_BLOCK_NUM * OP_PAGE_NUM;
@@ -32,7 +32,7 @@ public class Config {
 	// *Log Buffer Area // page
 	static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
 									: (((FTL == 2)||(FTL == 4)) ? 16
-									: ((FTL == 3) ? 12
+									: (((FTL == 3)||(FTL == 5)) ? 12
 									: 0));
 	static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 	static final int TOTAL_LOG_PAGE_NUM = LOG_BLOCK_NUM * LOG_PAGE_NUM;
@@ -40,7 +40,7 @@ public class Config {
 	// **LogLog Buffer Area
 	static final int LLOG_BLOCK_NUM = (FTL == 1) ? 0
 									: (((FTL == 2)||(FTL == 4)) ? 0
-									: ((FTL == 3) ? 4
+									: (((FTL == 3)||(FTL == 5)) ? 4
 									: 0));
 	static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 	static final int TOTAL_LLOG_PAGE_NUM = LLOG_BLOCK_NUM * LLOG_PAGE_NUM;
@@ -54,7 +54,7 @@ public class Config {
 		// Overflow provision
 		static final int OP_BLOCK_NUM = (FTL == 1) ? 512
 										: (((FTL == 2)||(FTL == 4)) ? 384
-										: ((FTL == 3) ? 256
+										: (((FTL == 3)||(FTL == 5)) ? 256
 										: 0));
 		static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
 		static final int TOTAL_OP_PAGE_NUM = OP_BLOCK_NUM * OP_PAGE_NUM;
@@ -62,7 +62,7 @@ public class Config {
 		// *Log Buffer Area // page
 		static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
 										: (((FTL == 2)||(FTL == 4)) ? 128
-										: ((FTL == 3) ? 25
+										: (((FTL == 3)||(FTL == 5)) ? 25
 										: 0));
 		static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 		static final int TOTAL_LOG_PAGE_NUM = LOG_BLOCK_NUM * LOG_PAGE_NUM;
@@ -70,7 +70,7 @@ public class Config {
 		// **LogLog Buffer Area
 		static final int LLOG_BLOCK_NUM = (FTL == 1) ? 0
 										: (((FTL == 2)||(FTL == 4)) ? 0
-										: ((FTL == 3) ? 231
+										: (((FTL == 3)||(FTL == 5)) ? 231
 										: 0));
 		static final int LLOG_PAGE_NUM = LOGICAL_PAGE_NUM;
 		static final int TOTAL_LLOG_PAGE_NUM = LLOG_BLOCK_NUM * LLOG_PAGE_NUM;

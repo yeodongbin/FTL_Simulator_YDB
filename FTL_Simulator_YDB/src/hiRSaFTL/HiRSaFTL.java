@@ -40,14 +40,14 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 
 				if ("Write".equals(readWrite)) {
 					// External write request No.
-					Data.count_total_ex_write++;
+					Data.write_req++;
 					countWrited1page(size);// Count 1 page
 
 					if (true == ram.getRAM().containsKey(lpn)) {// key-check
 						for (int i = 0; i < size; i++) {
 							// External write pages No.
-							Data.count_total_ex_write_pages++;
-							Data.all_total_write_pages++;
+							Data.ex_write_pages++;
+							Data.total_write_pages++;
 							currentLPN = lpn + i;
 
 							// ****** Size Classification (Sequential , Random)
@@ -163,7 +163,7 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 
 	private void switchGC(int block) {
 		// GC switch
-		if (true == freePageCount()) {// Free page Check
+		if (true == countFreePages()) {// Free page Check
 			// block = writing block
 			garbageCollectorFTL(block);
 		}
@@ -248,7 +248,7 @@ public class HiRSaFTL extends GarbageCollectorFTL {
 
 	private void countWrited1page(int size) {
 		if (size == 1) {
-			Data.count_write_ex_1page++;
+			Data.write_req_1page++;
 		}
 	}
 

@@ -10,7 +10,7 @@ public class GarbageCollectorFTL {
 	// Greedy GC=> smallest valid page per Block, FIFO Block
 	public void garbageCollectorFTL(int writingBlock) {
 		int currentPage = 0;
-		int PageInfo = 0;
+		int pageInfo = 0;
 
 		int victimBlock = 0;
 
@@ -30,10 +30,10 @@ public class GarbageCollectorFTL {
 			validCount = Ram.blockInfoValid[i];// Check Block valid
 			currentPage = i * Config.LOGICAL_PAGE_NUM;// first page number in
 														// the Block.
-			PageInfo = Ram.ppnTable[currentPage];
+			pageInfo = Ram.ppnTable[currentPage];
 
 			if ((0 == validCount)// Full Merge -> all Invalid
-					&& (-2 == PageInfo)) {
+					&& (-2 == pageInfo)) {
 				// put a Full Merge victim in Q
 				ram.getVictimQue().offer(i);
 				flagFull++; // Full merge Count
@@ -63,72 +63,73 @@ public class GarbageCollectorFTL {
 			if (0 == validCount) { // Full Merge
 				eraseBlock(victimBlock);
 				Data.fullmerge++;
-				//System.out.println("> Erase Block (Full Merge)= " + victimBlock);
+				System.out.println("> Erase Block (Full Merge)= " + victimBlock);
+				
 			} else if (0 != validCount) { // Partial Merge
 				migratedValidPageFromVictimBlkToFreeBlk(victimBlock);
 				eraseBlock(victimBlock);
-
 				Data.partialmerge++;
-				/*System.out.println("> Erase Block (Partial Merge)="
-						+ victimBlock + " ,Moving page= " + validCount);*/
+				System.out.println("> Erase Block (Partial Merge)="
+						+ victimBlock + " ,Moving page= " + validCount);
 			}
 		}
 
 		if (flagGC == 0) {
 			System.out.println(" Error: GC do not operate - GC");
 		}
+		
 		return;
 	}
 
 	// RSa GC for Log Buffer
-	public void gCLogBuf(int eraseBlock) {
+	public void gCLogBuf(int victimBlock) {
 
 		int currentLPN = 0;
 		int startPPN = 0;
 		int endPPN = 0;
 		int ppn = 0;
-		int flagPartial = 0;
+		int countMovePages = 0;
 
-		startPPN = eraseBlock * Config.PAGE_NUM;// start_Victim_PPN
+		startPPN = victimBlock * Config.PAGE_NUM;// start_Victim_PPN
 		endPPN = startPPN + Config.PAGE_NUM;// end_Victim_PPN
 
 		for (int i = startPPN; i < endPPN; i++) {
 			if (0 == Ram.ppnTable[i]) {// if valid page(0) is
-				flagPartial++;
+				countMovePages++;
 				currentLPN = extractedLPNFromMapTableByPPN(i);
 
 				do {// select free_ppn
 					ppn = allocator.allocFTL(Ram.ppnTable);
-				} while (eraseBlock == (ppn / Config.PAGE_NUM));
+				} while (victimBlock == (ppn / Config.PAGE_NUM));
 
 				linkedLPNToPPN(currentLPN, ppn);
-				Data.all_total_write_pages++;
+				Data.total_write_pages++;
 				Data.validMoveCount++;
 				Data.validMoveCountLog++;
 			}
 		}
 
-		printMergeType(eraseBlock, flagPartial);
-		eraseBlock(eraseBlock);
+		printMergeType(victimBlock, countMovePages);
+		eraseBlock(victimBlock);
 		Data.eraseCountLog++;
 		return;
 	}
 	
-	public void gCLLogBuf(int eraseBlock) {//Garbage Collector LogLog Buffer 
+	public void gCLLogBuf(int victimBlock) {//Garbage Collector LogLog Buffer 
 
 		int currentLPN = 0;
 		int currentPBN = 0;
 		int startPPN = 0;
 		int endPPN = 0;
 		int ppn = 0;
-		int flagPartial = 0;
+		int countOfMovePages = 0;
 
-		startPPN = eraseBlock * Config.PAGE_NUM;// start_Victim_PPN
+		startPPN = victimBlock * Config.PAGE_NUM;// start_Victim_PPN
 		endPPN = startPPN + Config.PAGE_NUM;// end_Victim_PPN -1
 
 		for (int i = startPPN; i < endPPN; i++) {
 			if (0 == Ram.ppnTable[i]) {// if valid page(0) is
-				flagPartial++;
+				countOfMovePages++;
 				currentLPN = extractedLPNFromMapTableByPPN(i);
 
 				do {// select free_ppn in Logbuf - YDB
@@ -137,17 +138,17 @@ public class GarbageCollectorFTL {
 					currentPBN = mappingLPNToPPN(currentLPN, ppn);
 					switchGCLogBuf(ppn, currentPBN);
 					
-				} while (eraseBlock == (ppn / Config.PAGE_NUM));
+				} while (victimBlock == (ppn / Config.PAGE_NUM));
 
 				linkedLPNToPPN(currentLPN, ppn);
-				Data.all_total_write_pages++;
+				Data.total_write_pages++;
 				Data.validMoveCount++;
 				Data.validMoveCountLog++;
 			}
 		}
 
-		printMergeType(eraseBlock, flagPartial);
-		eraseBlock(eraseBlock);
+		printMergeType(victimBlock, countOfMovePages);
+		eraseBlock(victimBlock);
 		Data.eraseCountLog++;
 		return;
 	}
@@ -198,7 +199,7 @@ public class GarbageCollectorFTL {
 				} while ((ppn / Config.PAGE_NUM) == victimBlock);
 
 				linkedLPNToPPN(currentLPN, ppn);
-				Data.all_total_write_pages++;
+				Data.total_write_pages++;
 				Data.validMoveCount++;
 			}
 		}
@@ -242,18 +243,19 @@ public class GarbageCollectorFTL {
 
 	}
 
-	private void printMergeType(int eraseBlock, int flagPartial) {
-		if (flagPartial > 0) {
+	private void printMergeType(int victimBlock, int countMovePages) {
+		if (countMovePages > 0) {
 			Data.partialmerge++;
-			//System.out.println(">> Erase Log Block (Partial Merge)="+ eraseBlock);
+			System.out.println(">> Erase Log Block (Partial Merge)="
+					+ victimBlock + " ,Moving page=" + countMovePages);
 		} else {
 			Data.fullmerge++;
-			//System.out.println(">> Erase Log Block (Full Merge)="+ eraseBlock);
+			System.out.println(">> Erase Log Block (Full Merge)="+ victimBlock);
 		}
 	}
 
 	// GC switch
-	public boolean freePageCount() {
+	public boolean countFreePages() {
 		int end = 0;
 		int numValue = 0;
 		boolean switchGC = false;
