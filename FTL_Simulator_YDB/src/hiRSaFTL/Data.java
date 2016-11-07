@@ -21,6 +21,10 @@ public class Data {
 
 	static int fullmerge = 0; // Full erase count
 	static int partialmerge = 0; // Partial erase count
+	static int fullmerge_data = 0; // Full erase count in data blocks
+	static int partialmerge_data = 0; // Partial erase count in data blocks
+	static int fullmerge_log = 0; // Full erase count in log blocks
+	static int partialmerge_log = 0; // Partial erase count in log blocks
 
 	static int count_total_read = 0;// External read request No.
 }

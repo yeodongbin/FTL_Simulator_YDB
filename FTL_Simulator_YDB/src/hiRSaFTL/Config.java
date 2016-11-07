@@ -8,9 +8,11 @@ package hiRSaFTL;
 
 public class Config {
 
-	public static boolean AGING = false;// false true
-	public static int FTL = 1; 
-	// 0:동시에 실시(미완성) 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL, 4:RSaFTL_DelayAlgorithm
+	public static boolean AGING = true;// false true
+	public static int FTL = 2; 
+	// 0:동시에 실시(미완성) 
+	// 1: PageFTL, 2:RSaFTL, 3:HiRSaFTL, 
+	// 4:RSaFTL_DelayAlgorithm 5:HiRSaFTL_DelayAlgorithm
 
 	static final int PAGE_BYPT_SIZE = 4096; // 4KB = 4096byte
 
@@ -53,7 +55,7 @@ public class Config {
 
 		// Overflow provision
 		static final int OP_BLOCK_NUM = (FTL == 1) ? 512
-										: (((FTL == 2)||(FTL == 4)) ? 256
+										: (((FTL == 2)||(FTL == 4)) ? 384
 										: (((FTL == 3)||(FTL == 5)) ? 256
 										: 0));
 		static final int OP_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -61,7 +63,7 @@ public class Config {
 
 		// *Log Buffer Area // page
 		static final int LOG_BLOCK_NUM = (FTL == 1) ? 0
-										: (((FTL == 2)||(FTL == 4)) ? 256
+										: (((FTL == 2)||(FTL == 4)) ? 128
 										: (((FTL == 3)||(FTL == 5)) ? 25
 										: 0));
 		static final int LOG_PAGE_NUM = LOGICAL_PAGE_NUM;
@@ -98,8 +100,8 @@ public class Config {
 	static final int SWITCH_GC_NUM = 2 * LOGICAL_PAGE_NUM;
 
 	static final String FILE_SYSTEM_INPUT = "D:/수업 자료/0. 연구 자료/Traces_MSR/"
-			+ "msr-cambridge1/MSR-Cambridge/mds_0.csv/CAMRESWMSA03-lvm0.csv";
-	static final String FILE_SYSTEM_OUTPUT = "./FileOut_mds_0.txt";
+			+ "msr-cambridge1/MSR-Cambridge/hm_0.csv/CAMRESHMSA01-lvm0.csv";
+	static final String FILE_SYSTEM_OUTPUT = "./FileOut_hm_0.txt";
 	// static final String FILE_SYSTEM_OUTPUT = "test"+".txt";
 
 	// Aging File

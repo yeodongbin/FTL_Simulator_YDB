@@ -5,18 +5,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
-	public void rSaFTL_delay() throws IOException {
+public class HiRSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
+	
+	public void hiRSaFTL_delay() throws IOException {
+		
 		int lpn = 0;
 		int currentLPN = 0;
 		int ppn = 0;
-		int block = 0;
+		int currentPBN = 0;
 		int size = 0;
+		int temp = -3;
 		long counter = 0;
 		String readWrite = null;
 		
-		Boolean gCState = false;
-		Boolean gCLogBufState = false;
+		Boolean gCState = false; //garbage Collector on/off
+		Boolean gCLogBufState = false; //garbage Collector logbuf on/off
 
 		try (BufferedReader br = new BufferedReader(new FileReader(
 				Config.FILE_SYSTEM_OUTPUT))) {
@@ -40,49 +43,108 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 					countWrited1page(size);// Count 1 page
 
 					if (true == ram.getRAM().containsKey(lpn)) {// key-check
+						
 						for (int i = 0; i < size; i++) {
 							// External write pages No.
 							Data.ex_write_pages++;
 							Data.total_write_pages++;
 							currentLPN = lpn + i;
 
-							// *** 1. When LPN have not been linked with PPN,
-							// -1 = free LPN
-							if (-1 == ram.getRAM().get(currentLPN)) {
-								block = mappingFreeLPNtoPPN(currentLPN);
-								// *** 2. When LPN has a valid page,...
-							} else if (((false == checkSequentialAddr(currentLPN)))
-									&& (1 == size) && (true == gCLogBufState)) {// YDB
-
-								block = detachLPN(currentLPN);
-								ppn = allocator.allocLogBuf(Ram.ppnTable);
-
-								if (-1 == ppn) {// Checking Error
-									System.out.println("Error - PageFTLBuffer");
-									System.exit(999);// Error code
-									break;
+							// ****** Size Classification (Sequential , Random)
+							// // Sequential Written LPN
+							if (1 < size) {
+								// mapping table entry: empty
+								if (-1 == ram.getRAM().get(currentLPN)) {
+									currentPBN = mappingFreeLPNtoPPN(currentLPN);
 								} else {
-									block = mappingLPNToPPN(currentLPN, ppn);
-									switchGCLogBuf(ppn, block);
-								}
+									// mapping table entry: filled
+									currentPBN = detachLPN(currentLPN);
+									ppn = allocator.allocFTL(Ram.ppnTable);
 
-								// *** 3. when LPN has many valid pages,...
-							} else if (-1 < ram.getRAM().get(currentLPN)) {
-								// allocation
-								block = detachLPN(currentLPN);
-								ppn = allocator.allocFTL(Ram.ppnTable);
-
-								if (-1 == ppn) {// Checking Error
-									System.out.println(" allocatiorFTL Error ");
-									break;
-								} else {
-									block = mappingLPNToPPN(currentLPN, ppn);
+									if (-1 == ppn) {
+										System.out
+												.println(" allocatiorFTL Error ");
+										break;
+									} else {
+										currentPBN = mappingLPNToPPN(
+												currentLPN, ppn);
+									}
 								}
+							} else if (1 == size) {// Random Written LPN
+								// mapping table entry: empty
+								if (-1 == ram.getRAM().get(currentLPN)) {
+									currentPBN = mappingFreeLPNtoPPN(currentLPN);
+								} else {	
+									ppn = ram.getRAM().get(currentLPN);
+									temp = ppn;
+									// mapping table entry: filled in Data
+									// Blocks
+									if (ppn < Config.ALL_PAGE_NUM) {
+										// Previous data is stored in several
+										if (false == checkSequentialAddr(currentLPN)
+												&& (true == gCLogBufState)) {
+											// saved in Log buffer
+											currentPBN = detachLPN(currentLPN);
+											ppn = allocator
+													.allocLogBuf(Ram.ppnTable);
+
+											if (temp == ppn) {// Checking Error
+												System.out
+														.println("Error!-PageFTLBuffer");
+												System.exit(999);// Error code
+												break;
+											} else {
+												currentPBN = mappingLPNToPPN(
+														currentLPN, ppn);
+												switchGCLogBuf(ppn, currentPBN);
+											}
+											// Previous data is stored in a row
+										} else {// saved in Data Blocks
+											
+											currentPBN = detachLPN(currentLPN);
+											ppn = allocator
+													.allocFTL(Ram.ppnTable);
+
+											if (-1 == ppn) {
+												System.out
+														.println(" allocatiorFTL Error ");
+												break;
+											} else {
+												currentPBN = mappingLPNToPPN(
+														currentLPN, ppn);
+											}
+										}
+									} else if (ppn >= Config.ALL_PAGE_NUM) {
+										// in Random Log or LLog buffer
+										currentPBN = detachLPN(currentLPN);
+										ppn = allocator
+												.allocLLogBuf(Ram.ppnTable);
+
+										if (temp == ppn) {// Checking Error
+											System.out
+													.println("Error - //in Random Log buffer");
+											System.exit(999);// Error code
+											break;
+										} else {
+											currentPBN = mappingLPNToPPN(
+													currentLPN, ppn);
+											switchGCLLogBuf(ppn, currentPBN);
+										}
+									} else {
+										System.out
+												.println("Error - ppn number error");
+										System.exit(999);// Error code
+										break;
+									}
+								}
+							} else {
+								System.out.println(" allocatior Error ");
+								break;
 							}
-
-							gCState = switchGC(block);// GC switch
+							//YDB
+							gCState = switchGC(currentPBN);// GC switch
 							// gcLog needs 2 Condition to operate its GC
-							// turnOn, switchGCLogBuf
+							// -> turnOn, switchGCLogBuf
 							gCLogBufState = turnOnGCLogbuf(gCState,
 									gCLogBufState);
 
@@ -93,7 +155,6 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 								System.exit(999);
 							}
 						}
-
 					} else {
 						System.out.println("Error : Overflow LPN");
 					}
@@ -103,12 +164,14 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 			}
 
 			hashMapToTxt();// record Hash Map to .txt file
+
 		} catch (IOException e) {
 			System.out.println("Exception while reading txt file: ");
 		}
 	}
-
+	
 	private Boolean turnOnGCLogbuf(Boolean gCState, Boolean gCLogBufState) {
+		
 		if ((true == gCState) && (false == gCLogBufState)) {
 			System.out.println("***  TURN ON GC LOGBUF  ***");
 			gCLogBufState = true;
@@ -117,21 +180,20 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 	}
 
 	private boolean switchGC(int writingBlock) {
-		// GC switch
-		boolean gCState = false;
+	
+		boolean gCState = false; 	
 
 		if (true == countFreePages()) {// Free page Check
-			// block = writing block
 			garbageCollectorFTL(writingBlock);
 			gCState = true;
 		}
 
 		return gCState;
 	}
-
+		
 	private void switchGCLogBuf(int ppn, int block) {
 		// switch GC Log-Buffer //YEO
-		if ((Config.TOTAL_PAGE_NUM - 1) == ppn) {
+		if ((Config.ALL_LOG_PAGE_NUM - 1) == ppn) {
 			gCLogBuf(Config.ALL_BLOCK_NUM);
 		} else if (((Config.LOG_PAGE_NUM - 1) == (ppn % Config.LOG_PAGE_NUM))
 				&& (-1 != Ram.ppnTable[ppn + 1])) {
@@ -140,7 +202,20 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 		}
 	}
 
+	// check point!!-YDB**
+	private void switchGCLLogBuf(int ppn, int block) {
+		// switch GC LogLog-Buffer //YEO
+		if ((Config.TOTAL_PAGE_NUM - 1) == ppn) {
+			gCLLogBuf(Config.ALL_LOG_BLOCK_NUM);
+		} else if (((Config.LLOG_PAGE_NUM - 1) == (ppn % Config.LLOG_PAGE_NUM))
+				&& (-1 != Ram.ppnTable[ppn + 1])) {
+			// GC=>NextBlock
+			gCLLogBuf(block + 1);
+		}
+	}
+
 	private int detachLPN(int currentLPN) {
+		
 		int currPPN;
 		int currPBN;
 		int validNum;
@@ -152,14 +227,14 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 		Ram.ppnTable[currPPN] = -2;// -2 Invalid
 
 		currPBN = currPPN / Config.PAGE_NUM;
-		validNum = Ram.blockInfoValid[currPBN] - 1;// Valid
+		validNum = Ram.blockInfoValid[currPBN] - 1;// subtraction Valid-score
 		Ram.blockInfoValid[currPBN] = validNum;
 		return currPBN;
 	}
 
 	private int mappingLPNToPPN(int currentLPN, int ppn) {
+		
 		int pbn;
-
 		pbn = ppn / Config.PAGE_NUM;
 		ram.getRAM().put(currentLPN, ppn);
 		Ram.ppnTable[ppn] = 0; // 0 valid
@@ -168,16 +243,17 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 	}
 
 	private int mappingFreeLPNtoPPN(int currentLPN) {
-		int freePPN; // physical Page Number
-		int pBN; // Logical Block Number
+		
+		int ppn;
+		int block;
 
-		freePPN = allocator.allocFTL(Ram.ppnTable);
-		pBN = mappingLPNToPPN(currentLPN, freePPN);
-
-		return pBN;
+		ppn = allocator.allocFTL(Ram.ppnTable);
+		block = mappingLPNToPPN(currentLPN, ppn);
+		return block;
 	}
 
 	private void writeNumValidonBlockTable(int block) {
+		
 		int validNum;
 		// Write Block of the Number of Valid page
 		validNum = Ram.blockInfoValid[block] + 1;
@@ -185,18 +261,21 @@ public class RSaFTL_DelayAlgorithm extends GarbageCollectorFTL {
 	}
 
 	private void hashMapToTxt() throws IOException {
+		
 		ram.hashMapToTxt(ram.getRAM(), Config.RAM_OUTPUT);
 		ram.hashMapToTxt(Ram.ppnTable, Config.PAGE_TABLE_OUTPUT);
 		ram.hashMapToTxt(Ram.blockInfoValid, Config.BLOCK_TABLE_OUTPUT);
 	}
 
 	private void InitTables() throws FileNotFoundException {
+		
 		ram.initial_mappingTable();// initializing mapping Table
 		ram.initial_blockValid();// initializing block NumValid
 		ram.initial_pageTable();// initializing Physical page Table
 	}
 
 	private void countWrited1page(int size) {
+
 		if (size == 1) {
 			Data.write_req_1page++;
 		}

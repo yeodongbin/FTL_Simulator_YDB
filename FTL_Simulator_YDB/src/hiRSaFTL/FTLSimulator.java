@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FTLSimulator {
-
+//YDB
 	public static void main(String[] args) throws Exception {
 		
 		long time1 = System.currentTimeMillis();// start time
@@ -51,6 +51,13 @@ public class FTLSimulator {
 			executionResult();// in console
 			System.out.println("=>RSaFTL_DelayAlgorithm Simulator End! ");
 			break;
+		case 5:
+			System.out.println("=>HiRSaFTL_DelayAlgorithm Simulator Start! ");
+			HiRSaFTL_DelayAlgorithm hiRSaFTL_delay = new HiRSaFTL_DelayAlgorithm();
+			hiRSaFTL_delay.hiRSaFTL_delay();
+			executionResult();// in console
+			System.out.println("=>HiRSaFTL_DelayAlgorithm Simulator End! ");
+			break;
 		default:
 			System.out.println("---!!Config.FTL Error!!---");
 			break;
@@ -83,7 +90,7 @@ public class FTLSimulator {
 		System.out.println("Sequential Write Request= "
 				+ (Data.write_req - Data.write_req_1page));
 		System.out.println("Random Write Request    = " + Data.write_req_1page);
-
+		
 		System.out.println("Written pages Count (exteral/interal) = "
 				+ Data.total_write_pages);
 		System.out.println("Written pages Count (external) = "
@@ -92,9 +99,19 @@ public class FTLSimulator {
 				+ (Data.total_write_pages - Data.ex_write_pages));
 		// valid-page Move 와 동일해야한다.
 
+		System.out.println("\n");
 		System.out.println("Erase Count              = " + Data.eraseCount);
 		System.out.println("Fullmerge Count          = " + Data.fullmerge);
 		System.out.println("Partialmerge Count       = " + Data.partialmerge);
+		System.out
+				.println("Fullmerge (data blocks)    = " + Data.fullmerge_data);
+		System.out
+				.println("Partialmerge (data blocks) = " + Data.partialmerge_data);
+		System.out
+				.println("Fullmerge (log blocks)     = " + Data.fullmerge_log);
+		System.out
+				.println("Partialmerge (log blocks)  = " + Data.partialmerge_log);
+
 		System.out.println("Valid-page Move          = " + Data.validMoveCount);
 		System.out.println("Valid-page Move Log      = "
 				+ Data.validMoveCountLog);
