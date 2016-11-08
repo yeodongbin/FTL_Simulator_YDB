@@ -90,7 +90,7 @@ public class FTLSimulator {
 		System.out.println("Sequential Write Request= "
 				+ (Data.write_req - Data.write_req_1page));
 		System.out.println("Random Write Request    = " + Data.write_req_1page);
-		
+		System.out.println("");
 		System.out.println("Written pages Count (exteral/interal) = "
 				+ Data.total_write_pages);
 		System.out.println("Written pages Count (external) = "
@@ -98,8 +98,7 @@ public class FTLSimulator {
 		System.out.println("Written pages Count (interal)  = "
 				+ (Data.total_write_pages - Data.ex_write_pages));
 		// valid-page Move 와 동일해야한다.
-
-		System.out.println("\n");
+		System.out.println("");
 		System.out.println("Erase Count              = " + Data.eraseCount);
 		System.out.println("Fullmerge Count          = " + Data.fullmerge);
 		System.out.println("Partialmerge Count       = " + Data.partialmerge);
