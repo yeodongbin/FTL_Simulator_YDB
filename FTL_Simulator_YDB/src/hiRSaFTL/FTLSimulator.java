@@ -16,12 +16,12 @@ public class FTLSimulator {
 		long time1 = System.currentTimeMillis();// start time
 		
 		printTodayDate();
-
+/*
 		// FileSystem_Output
 		FileSystem filesystem = new FileSystem();
 		filesystem.csv_To_txt();
 		System.out.println("=> .txt is extracted from .csv !!");
-
+*/
 		switch (Config.FTL) {
 		case 1:
 			System.out.println("=>Page FTL Simulator Start! ");
